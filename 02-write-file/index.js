@@ -1,5 +1,6 @@
 const fs = require('fs');
 const path = require('path');
+const stream = fs.createWriteStream(path.join(__dirname, './text.txt'));
 
 let fileName = path.join(__dirname + '\\text.txt');
 let output = fs.createWriteStream(fileName, 'utf-8');
@@ -15,6 +16,8 @@ process.on('SIGINT', function () {
 process.stdin.on('data', function (print) {
     print === 'exit' ? process.exit() : output.write(print);
 });
+
+process.stdin.addListener('data', data => data.toString().trim() === 'exit' ? process.exit(process.stdout.write('Oh, no!\n')) : stream.write(data));
 
 process.on('exit', function () {
     process.stdout.write('You are already leaving, well, bye!\n');
